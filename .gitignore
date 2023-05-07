@@ -223,6 +223,7 @@ modules.xml
 
 
 ### Spark ###
+build/venv
 *#*#
 *.#*
 *.pyc
