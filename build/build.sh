@@ -5,19 +5,22 @@
 # -- Variables ---------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
 BUILD_DATE="$(date -u +'%Y-%m-%d')"
 
 # Description: Read the value of a key from the build configuration file (build.yml).
 # Inputs:
-#   $1: The key to search for in the build configuration file.
+#   $1: The path to the build configuration file.
+#   $2: The key to search for in the build configuration file.
 # Outputs:
 #   The value corresponding to the provided key in the build configuration file.
 read_config() {
-  local key="$1"
-  local value=$(grep -m 1 "$key" build.yml | grep -o -P '(?<=").*(?=")')
+  local file_path="$1"
+  local key="$2"
+  local value=$(grep -m 1 "$key" "$file_path" | grep -o -P '(?<=").*(?=")')
 
   if [[ -z "$value" ]]; then
-    echo "Error: Required configuration value '$key' is missing in build.yml" >&2
+    echo "Error: Required configuration value '$key' is missing in $file_path" >&2
     exit 1
   fi
 
@@ -25,13 +28,14 @@ read_config() {
 }
 
 # Validate and assign build configuration values
-SHOULD_BUILD_BASE=$(read_config "build_base")               # Whether to build the base image
-SHOULD_BUILD_SPARK=$(read_config "build_spark")             # Whether to build the Spark images
-SHOULD_BUILD_JUPYTERLAB=$(read_config "build_jupyterlab")   # Whether to build the JupyterLab image
-SPARK_VERSION=$(read_config "spark")                        # Spark version
-JUPYTERLAB_VERSION=$(read_config "jupyterlab")              # JupyterLab version
+BUILD_CONFIG_FILE="$SCRIPT_DIR/build.yml"                                          # Path to the build configuration file
 
+SHOULD_BUILD_BASE=$(read_config "$BUILD_CONFIG_FILE" "build_base")               # Whether to build the base image
+SHOULD_BUILD_SPARK=$(read_config "$BUILD_CONFIG_FILE" "build_spark")             # Whether to build the Spark images
+SHOULD_BUILD_JUPYTERLAB=$(read_config "$BUILD_CONFIG_FILE" "build_jupyterlab")   # Whether to build the JupyterLab image
 
+SPARK_VERSION=$(read_config "$BUILD_CONFIG_FILE" "spark")                        # Spark version
+JUPYTERLAB_VERSION=$(read_config "$BUILD_CONFIG_FILE" "jupyterlab")              # JupyterLab version
 SPARK_VERSION_MAJOR=${SPARK_VERSION:0:1}
 
 # Set Hadoop version and Scala version based on Spark version
@@ -202,12 +206,14 @@ function buildImage() {
 # Inputs: None
 # Outputs: None
 function buildImages() {
+  DOCKER_BASE_DIR="$SCRIPT_DIR/docker"
+  
   declare -A image_configs=(
-    ["base"]="docker/base/Dockerfile base:latest --build-arg scala_version=${SCALA_VERSION}"
-    ["spark-base"]="docker/spark-base/Dockerfile spark-base:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg hadoop_version=${HADOOP_VERSION}"
-    ["spark-master"]="docker/spark-master/Dockerfile spark-master:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"
-    ["spark-worker"]="docker/spark-worker/Dockerfile spark-worker:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"
-    ["jupyterlab"]="docker/jupyterlab/Dockerfile jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} --build-arg scala_version=${SCALA_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg jupyterlab_version=${JUPYTERLAB_VERSION} --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION}"
+    ["jupyterlab"]="$DOCKER_BASE_DIR/jupyterlab/Dockerfile jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} --build-arg scala_version=${SCALA_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg jupyterlab_version=${JUPYTERLAB_VERSION} --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION}"
+    ["base"]="$DOCKER_BASE_DIR/base/Dockerfile base:latest --build-arg scala_version=${SCALA_VERSION}"
+    ["spark-base"]="$DOCKER_BASE_DIR/spark-base/Dockerfile spark-base:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg hadoop_version=${HADOOP_VERSION}"
+    ["spark-master"]="$DOCKER_BASE_DIR/spark-master/Dockerfile spark-master:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"
+    ["spark-worker"]="$DOCKER_BASE_DIR/spark-worker/Dockerfile spark-worker:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"   
   )
 
   for image_name in "${!image_configs[@]}"; do

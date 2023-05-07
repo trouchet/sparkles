@@ -1,5 +1,11 @@
+# Enable Docker BuildKit
+# This enables the use of the ARG instruction for relative path resolution
+# You can remove this line if you already have it enabled in your Docker daemon configuration
+# See: https://docs.docker.com/develop/develop-images/build_enhancements/
+# syntax = docker/dockerfile:experimental
+
 FROM base
-LABEL manteiner="Andre Perez <andre.marcos.perez@gmail.com>"
+LABEL maintainer="Bruno Peixoto <brunolnetto@gmail.com>"
 
 # -- Layer: Image Metadata
 
@@ -13,7 +19,7 @@ LABEL org.label-schema.schema-version="1.0"
 
 # -- Layer: Notebooks and data
 
-ADD workspace/ ${SHARED_WORKSPACE}/
+RUN mkdir -p ${SHARED_WORKSPACE}
 
 # -- Layer: JupyterLab + Python kernel for PySpark
 
@@ -44,6 +50,14 @@ RUN apt-get install -y r-base-dev && \
     curl https://archive.apache.org/dist/spark/spark-${spark_version}/SparkR_${spark_version}.tar.gz -k -o sparkr.tar.gz && \
     R CMD INSTALL sparkr.tar.gz && \
     rm -f sparkr.tar.gz
+
+# -- Layer: Copy local workspace
+
+# Obtain the relative path to the workspace folder
+ARG WORKSPACE_RELATIVE_PATH=build/workspace
+
+# Copy the workspace folder to the shared workspace location
+COPY $WORKSPACE_RELATIVE_PATH /opt/workspace/
 
 # -- Runtime
 
