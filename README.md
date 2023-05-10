@@ -22,10 +22,17 @@ Learn Apache Spark through its **Scala**, **Python** (PySpark) and **R** (SparkR
 
 ## TL;DR
 
+On linux:
+
 ```bash
-curl -LO https://raw.githubusercontent.com/cluster-apps-on-docker/spark-standalone-cluster-on-docker/master/docker-compose.yml
+curl -LO https://raw.githubusercontent.com/trouchet/sparkles/master/docker-compose.yml
 docker-compose up
 ```
+
+OR
+
+1. Clone the repository;
+2. Run command `make deploy`
 
 ## Documentation
 
