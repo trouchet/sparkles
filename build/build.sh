@@ -28,7 +28,7 @@ read_config() {
 }
 
 # Validate and assign build configuration values
-BUILD_CONFIG_FILE="$SCRIPT_DIR/build.yml"                                          # Path to the build configuration file
+BUILD_CONFIG_FILE="$SCRIPT_DIR/build.yml"                                        # Path to the build configuration file
 
 SHOULD_BUILD_BASE=$(read_config "$BUILD_CONFIG_FILE" "build_base")               # Whether to build the base image
 SHOULD_BUILD_SPARK=$(read_config "$BUILD_CONFIG_FILE" "build_spark")             # Whether to build the Spark images
@@ -221,7 +221,6 @@ function buildImages() {
     buildImage "$dockerfile_path" "$tag_name" "$additional_args"
   done
 }
-
 
 # Description: Sets up the APT progress bar for a fancier display during package installation.
 # 
