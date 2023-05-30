@@ -1,9 +1,10 @@
+---
 applications:
   hadoop: "3.2"
-  scala: "2.12.10"
-  scala_kernel: "0.10.9"
-  spark: "3.0.0"
-  jupyterlab: "3.0.0"
+  scala: 2.12.10
+  scala_kernel: 0.10.9
+  spark: 3.0.0
+  jupyterlab: 3.0.0
 build:
   build_base: "true"
   build_spark: "true"
