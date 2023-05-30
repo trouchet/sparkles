@@ -36,8 +36,7 @@ RUN pip3 install --upgrade pip && \
 ARG scala_version
 
 RUN apt-get install -y ca-certificates-java --no-install-recommends
-RUN curl -Lo coursier https://git.io/coursier-cli && \
-    chmod +x coursier && \
+RUN curl -Lo coursier https://git.io/coursier-cli && chmod +x coursier && \
     ./coursier launch --fork almond:${scala_kernel_version} --scala ${scala_version} -- --display-name "Scala ${scala_version}" --install && \
     rm -f coursier
 
