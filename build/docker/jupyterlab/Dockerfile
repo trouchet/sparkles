@@ -27,7 +27,7 @@ ARG spark_version
 ARG jupyterlab_version
 ARG scala_kernel_version
 
-RUN apt-get update -y && apt-get install -y python3-pip python3-develop
+RUN apt-get update -y && apt-get install -y python3-pip python3-dev
 RUN pip3 install --upgrade pip && \
     pip3 install wget==3.2 pyspark==${spark_version} jupyterlab==${jupyterlab_version}
 
