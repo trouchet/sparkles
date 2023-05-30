@@ -159,10 +159,4 @@ project is maintained by:
 > **André Perez** - [dekoperez](https://twitter.com/dekoperez) - andre.marcos.perez@gmail.com
 
 ## <a name="support"></a>Support
-
-> Support us on GitHub by staring this project :star:
-
-> Support us on [Patreon](https://www.patreon.com/andreperez). :sparkling_heart:
- 
-</details>
  
