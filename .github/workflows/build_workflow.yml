@@ -16,9 +16,6 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKERHUB_PWD }}" | docker login --username ${{ secrets.DOCKERHUB_USR }} --password-stdin
       
-      - name: Pull latest Docker images
-        run: docker-compose -f docker-compose.yml pull
-
       - name: Build Docker images
         run: docker-compose -f docker-compose.yml build
       
