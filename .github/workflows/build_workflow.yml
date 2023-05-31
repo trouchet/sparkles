@@ -25,7 +25,6 @@ jobs:
         id: read-build-yaml
         run: |
           python -c 'import yaml; print(yaml.safe_load(open("build/build.yml"))["applications"])'
-          python -c 'import yaml; print(yaml.safe_load(open("build/build.yml"))["build"])'
 
   spark-latest-images:
     name: Spark Images (latest)
