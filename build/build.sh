@@ -209,11 +209,16 @@ function buildImages() {
   DOCKER_BASE_DIR="$SCRIPT_DIR/docker"
   
   declare -A image_configs=(
-    ["jupyterlab"]="$DOCKER_BASE_DIR/jupyterlab/Dockerfile jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} --build-arg scala_version=${SCALA_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg jupyterlab_version=${JUPYTERLAB_VERSION} --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION}"
+    ["jupyterlab"]="$DOCKER_BASE_DIR/jupyterlab/Dockerfile jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} \
+    --build-arg scala_version=${SCALA_VERSION} --build-arg spark_version=${SPARK_VERSION} \
+    --build-arg jupyterlab_version=${JUPYTERLAB_VERSION} --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION}"
     ["base"]="$DOCKER_BASE_DIR/base/Dockerfile base:latest --build-arg scala_version=${SCALA_VERSION}"
-    ["spark-base"]="$DOCKER_BASE_DIR/spark-base/Dockerfile spark-base:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION} --build-arg hadoop_version=${HADOOP_VERSION}"
-    ["spark-master"]="$DOCKER_BASE_DIR/spark-master/Dockerfile spark-master:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"
-    ["spark-worker"]="$DOCKER_BASE_DIR/spark-worker/Dockerfile spark-worker:${SPARK_VERSION} --build-arg spark_version=${SPARK_VERSION}"   
+    ["spark-base"]="$DOCKER_BASE_DIR/spark-base/Dockerfile spark-base:${SPARK_VERSION} \
+    --build-arg spark_version=${SPARK_VERSION} --build-arg hadoop_version=${HADOOP_VERSION}"
+    ["spark-master"]="$DOCKER_BASE_DIR/spark-master/Dockerfile spark-master:${SPARK_VERSION} \
+    --build-arg spark_version=${SPARK_VERSION}"
+    ["spark-worker"]="$DOCKER_BASE_DIR/spark-worker/Dockerfile spark-worker:${SPARK_VERSION} 
+    --build-arg spark_version=${SPARK_VERSION}"   
   )
 
   for image_name in "${!image_configs[@]}"; do
