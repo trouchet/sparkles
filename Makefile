@@ -34,6 +34,7 @@ preprocess: venv build
 # Stops existing containers, preprocesses the docker-compose.yml, and deploys the containers
 deploy: stop-containers preprocess
 	@echo "Deploying docker-compose.yml..."
+	@docker-compose build
 	@docker-compose up -d
 
 # Target: stop-containers
