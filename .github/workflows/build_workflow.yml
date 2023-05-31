@@ -1,4 +1,4 @@
-name: build-staging-master
+name: Docker Compose
 on:
   push:
     branches:
@@ -6,48 +6,17 @@ on:
       - 'master'
 
 jobs:
-  read-build-config:
-    name: Read Build Configuration
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.x
+      - name: Log in to Docker Hub
+        run: docker login --username ${{ secrets.DOCKERHUB_USR }} --password-stdin <<< ${{ secrets.DOCKERHUB_PWD }}
 
-      - name: Install PyYAML
-        run: pip install pyyaml
-
-      - name: Read Build Config
-        id: read-build-yaml
+      - name: Build and run Docker Compose
         run: |
-          python -c 'import yaml; print(yaml.safe_load(open("build/build.yml"))["applications"])'
-
-  spark-latest-images:
-    name: Spark Images (latest)
-    needs: read-build-config
-    runs-on: ubuntu-latest
-    env:
-      DOCKERHUB_USR: ${{ secrets.DOCKERHUB_USR }}
-      DOCKERHUB_PWD: ${{ secrets.DOCKERHUB_PWD }}
-      SCALA_VERSION: ${{ needs.read-build-config.outputs.build_config.scala }}
-      SPARK_VERSION: ${{ needs.read-build-config.outputs.build_config.spark }}
-      HADOOP_VERSION: ${{ needs.read-build-config.outputs.build_config.hadoop }}
-      IS_LATEST: "true"
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Build Spark v3.0.0 (latest)
-        uses: ./.github/actions/build-spark
-        with:
-          DOCKERHUB_USR: ${{ env.DOCKERHUB_USR }}
-          DOCKERHUB_PWD: ${{ env.DOCKERHUB_PWD }}
-          SCALA_VERSION: ${{ env.SCALA_VERSION }}
-          SPARK_VERSION: ${{ env.SPARK_VERSION }}
-          HADOOP_VERSION: ${{ env.HADOOP_VERSION }}
-          IS_LATEST: ${{ env.IS_LATEST }}
-
-  
+          cd ../..
+          docker-compose up -d
