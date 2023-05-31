@@ -14,9 +14,12 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Log in to Docker Hub
-        run: docker login --username ${{ secrets.DOCKERHUB_USR }} --password-stdin <<< ${{ secrets.DOCKERHUB_PWD }}
-
-      - name: Build and run Docker Compose
-        run: |
-          docker-compose -f docker-compose.yml up -d
+        run: echo "${{ secrets.DOCKERHUB_PWD }}" | docker login --username ${{ secrets.DOCKERHUB_USR }} --password-stdin
+      
+      - name: Build Docker images
+        run: docker-compose -f docker-compose.yml build
+      
+      - name: Run Docker Compose
+        run: docker-compose -f docker-compose.yml up -d
+      
       
