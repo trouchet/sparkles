@@ -18,5 +18,5 @@ jobs:
 
       - name: Build and run Docker Compose
         run: |
-          cd ../..
+          cd ..
           docker-compose up -d
