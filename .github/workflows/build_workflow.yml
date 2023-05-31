@@ -25,7 +25,7 @@ jobs:
         id: read-build-yaml
         run: |
           echo "build_config=$(cat build/build.yml)" >> $GITHUB_ENV
-          python -c 'import sys, yaml; print(yaml.safe_load(sys.stdin.read())["applications"])'
+          python -c 'import sys, yaml; print(yaml.safe_load(sys.stdin)["applications"])'
 
   spark-latest-images:
     name: Spark Images (latest)
