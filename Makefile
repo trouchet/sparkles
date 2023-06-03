@@ -3,6 +3,7 @@
 # Set the default number of workers to 5 if not provided
 NUM_WORKERS ?= 5
 
+
 .PHONY: all build venv preprocess deploy
 
 # Default target: deploy
@@ -30,16 +31,45 @@ preprocess: venv build
 	@echo "Preprocessing docker-compose.yml..."
 	@. venv/bin/activate; python preprocess.py $(NUM_WORKERS)
 
-# Target: deploy
-# Stops existing containers, preprocesses the docker-compose.yml, and deploys the containers
-deploy: stop-containers preprocess
-	@echo "Deploying docker-compose.yml..."
-	@docker-compose build
-	@docker-compose up -d
+# Target: push
+# push existing containers to Docker Hub
+push: stop preprocess build
+	./scripts/docker-push.sh
 
-# Target: stop-containers
+# Target: stop
 # Stops and removes existing containers, and removes the HDFS volume
-stop-containers:
+stop:
 	@echo "Stopping and removing existing containers..."
 	@docker-compose down -v --remove-orphans
 	@docker volume rm -f hadoop-distributed-file-system
+
+
+# Target: deploy
+# Stops existing containers, preprocesses the docker-compose.yml, and deploys the containers
+deploy: stop preprocess
+	@echo "Deploying docker-compose.yml..."
+	@docker-compose build --no-cache
+	@docker-compose up -d
+
+
+# Target: scale-up
+# Scale up the number of containers or workers
+scale-up: venv
+	@echo "Scaling up..."
+	@NUM_WORKERS=$$(($(NUM_WORKERS) + 1)); \
+	make stop; \
+	make preprocess; \
+	docker-compose build --no-cache; \
+	docker-compose up -d
+
+# Target: ps
+# List spark-container information 
+ps:
+	@echo "Listing spark-related containers..."
+	@docker ps --filter "name=spark" --filter "name=jupyterlab"
+	
+# Target: logs
+# Display the logs of running containers
+logs:
+	@echo "Displaying logs..."
+	@docker-compose logs
