@@ -19,7 +19,7 @@ LABEL org.label-schema.schema-version="1.0"
 
 # -- Layer: Notebooks and data
 
-ADD workspace/ ${SHARED_WORKSPACE}/
+ADD build/workspace/ ${SHARED_WORKSPACE}/
 
 # -- Layer: JupyterLab + Python kernel for PySpark
 
@@ -53,4 +53,4 @@ RUN R -e "install.packages('IRkernel')" && \
 EXPOSE 8888
 
 WORKDIR ${SHARED_WORKSPACE}
-CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+CMD jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''

@@ -195,8 +195,10 @@ function buildImage() {
   local dockerfile_path="$1"
   local tag_name="$2"
   local additional_args="$3"
-
-  docker build --build-arg build_date="${BUILD_DATE}" ${additional_args} \
+  
+  docker build \
+    --build-arg build_date="${BUILD_DATE}" \
+    ${additional_args} \
     -f "${dockerfile_path}" \
     -t "${tag_name}" .
 }
@@ -209,21 +211,26 @@ function buildImages() {
   DOCKER_BASE_DIR="$SCRIPT_DIR/docker"
   
   declare -A image_configs=(
-    ["jupyterlab"]="$DOCKER_BASE_DIR/jupyterlab/Dockerfile jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} \
-    --build-arg scala_version=${SCALA_VERSION} --build-arg spark_version=${SPARK_VERSION} \
-    --build-arg jupyterlab_version=${JUPYTERLAB_VERSION} --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION}"
-    ["base"]="$DOCKER_BASE_DIR/base/Dockerfile base:latest --build-arg scala_version=${SCALA_VERSION}"
-    ["spark-base"]="$DOCKER_BASE_DIR/spark-base/Dockerfile spark-base:${SPARK_VERSION} \
-    --build-arg spark_version=${SPARK_VERSION} --build-arg hadoop_version=${HADOOP_VERSION}"
-    ["spark-master"]="$DOCKER_BASE_DIR/spark-master/Dockerfile spark-master:${SPARK_VERSION} \
+    ["base"]="base:latest \
+    --build-arg scala_version=${SCALA_VERSION}"
+    ["spark-base"]="spark-base:${SPARK_VERSION} \
+    --build-arg spark_version=${SPARK_VERSION} \
+    --build-arg hadoop_version=${HADOOP_VERSION}"
+    ["spark-master"]="spark-master:${SPARK_VERSION} \
     --build-arg spark_version=${SPARK_VERSION}"
-    ["spark-worker"]="$DOCKER_BASE_DIR/spark-worker/Dockerfile spark-worker:${SPARK_VERSION} 
-    --build-arg spark_version=${SPARK_VERSION}"   
+    ["spark-worker"]="spark-worker:${SPARK_VERSION} \
+    --build-arg spark_version=${SPARK_VERSION}"
+    ["jupyterlab"]="jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} \
+    --build-arg build_date="${BUILD_DATE}" \
+    --build-arg scala_kernel_version="${SCALA_KERNEL_VERSION}" \
+    --build-arg scala_version="${SCALA_VERSION}" \
+    --build-arg spark_version="${SPARK_VERSION}" \
+    --build-arg jupyterlab_version=${JUPYTERLAB_VERSION}"       
   )
-
+  
   for image_name in "${!image_configs[@]}"; do
-    read -r dockerfile_path tag_name additional_args <<<"${image_configs[$image_name]}"
-    buildImage "$dockerfile_path" "$tag_name" "$additional_args"
+    read -r tag_name additional_args <<<"${image_configs[$image_name]}"
+    buildImage "$DOCKER_BASE_DIR/$image_name/Dockerfile" "$tag_name" "$additional_args"
   done
 }
 
@@ -265,4 +272,4 @@ function prepareEnvironment() {
 # -- Main --------------------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------------------------
 
-prepareEnvironment;
+prepareEnvironment
