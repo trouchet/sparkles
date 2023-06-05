@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Step 1: Get the container IDs of the desired containers
-container_ids=$(docker ps -a --filter "name=spark-" --format "{{.ID}}")
+container_ids=$(docker ps -a \
+--filter "name=spark" \
+--filter "name=jupyterlab" \
+--format "{{.ID}}")
 
 # Step 2: Create a consolidated image
 consolidated_image="sparkles"
