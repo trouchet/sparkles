@@ -33,8 +33,8 @@ preprocess: venv build
 
 # Target: push
 # push existing containers to Docker Hub
-push: stop preprocess build
-	./scripts/docker-push.sh
+push: 
+	./scripts/docker-push.sh $(u)
 
 # Target: stop
 # Stops and removes existing containers, and removes the HDFS volume
@@ -46,7 +46,7 @@ stop:
 
 # Target: deploy
 # Stops existing containers, preprocesses the docker-compose.yml, and deploys the containers
-deploy: stop preprocess
+deploy: stop preprocess build
 	@echo "Deploying docker-compose.yml..."
 	@docker-compose build --no-cache
 	@docker-compose up -d
