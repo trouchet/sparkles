@@ -157,6 +157,7 @@ A list of amazing people that somehow contributed to the project can be found in
 project is maintained by:
 
 > **André Perez** - [dekoperez](https://twitter.com/dekoperez) - andre.marcos.perez@gmail.com
+
 > **Bruno Peixoto** - [brunolnetto](https://twitter.com/brunolnetto) - brunolnetto@gmail.com
 
 ## <a name="support"></a>Support
