@@ -200,7 +200,9 @@ function buildImage() {
     --build-arg build_date="${BUILD_DATE}" \
     ${additional_args} \
     -f "${dockerfile_path}" \
-    -t "${tag_name}" .
+    -t "${tag_name}" \
+    -q \
+    .
 }
 
 # Description: Build the Docker images based on the build configuration.
@@ -234,23 +236,11 @@ function buildImages() {
   done
 }
 
-# Description: Sets up the APT progress bar for a fancier display during package installation.
-# 
-# Input: None.
-# Output: None.
-function preamble() {
-  # Enable fancy progress bar for package installation
-  echo 'Dpkg::Progress-Fancy "1";' > /etc/apt/apt.conf.d/99progressbar
-}
-
 # Description: Builds the Docker images required for the Apache Spark standalone cluster environment.
 # 
 # Input: None.
 # Output: None.
 function buildEnvironment() {
-  # Set up the APT progress bar
-  preamble
-
   # Build the Docker images based on the build configuration
   buildImages
 }
