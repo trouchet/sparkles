@@ -2,11 +2,11 @@
 
 # List of image names to remove
 images=(
-  "jupyterlab"
-  "spark-worker"
-  "spark-master"
-  "spark-base"
   "base"
+  "spark-base"
+  "spark-master"
+  "spark-worker"
+  "jupyterlab"
 )
 
 # Restart containers function

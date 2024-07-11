@@ -6,8 +6,9 @@ container_ids=$(docker ps -a \
 --filter "name=jupyterlab" \
 --format "{{.ID}}")
 
-# Step 2: Create a consolidated image
 consolidated_image="sparkles"
+
+# Step 2: Create a consolidated image
 for container_id in $container_ids; do
     docker commit "$container_id" "$consolidated_image"
 done
