@@ -56,7 +56,7 @@ else
 fi
 
 # Images and volumes names
-image_order=("base" "spark-base" "spark-master" "spark-worker" "jupyterlab")
+image_order=("base" "spark-base" "jupyterlab" "spark-master" "spark-worker")
 volume_names=("hadoop-distributed-file-system")
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -190,13 +190,14 @@ function buildImage() {
   local dockerfile_path="$1"
   local tag_name="$2"
   local additional_args="$3"
-  
+
+  echo "$additional_args"
+
   docker build \
     --build-arg build_date="${BUILD_DATE}" \
     ${additional_args} \
     -f "${dockerfile_path}" \
     -t "${tag_name}" \
-    -q \
     .
 }
 
@@ -218,10 +219,10 @@ function buildImages() {
     ["spark-worker"]="spark-worker:${SPARK_VERSION} \
     --build-arg spark_version=${SPARK_VERSION}"
     ["jupyterlab"]="jupyterlab:${JUPYTERLAB_VERSION}-spark-${SPARK_VERSION} \
-    --build-arg build_date="${BUILD_DATE}" \
-    --build-arg scala_kernel_version="${SCALA_KERNEL_VERSION}" \
-    --build-arg scala_version="${SCALA_VERSION}" \
-    --build-arg spark_version="${SPARK_VERSION}" \
+    --build-arg build_date=${BUILD_DATE} \
+    --build-arg scala_kernel_version=${SCALA_KERNEL_VERSION} \
+    --build-arg scala_version=${SCALA_VERSION} \
+    --build-arg spark_version=${SPARK_VERSION} \
     --build-arg jupyterlab_version=${JUPYTERLAB_VERSION}"       
   )
   

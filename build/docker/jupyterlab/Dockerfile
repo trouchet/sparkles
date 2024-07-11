@@ -17,9 +17,6 @@ LABEL org.label-schema.description="JupyterLab image"
 LABEL org.label-schema.url="https://github.com/trouchet/sparkles"
 LABEL org.label-schema.schema-version="1.0"
 
-# -- Layer: Notebooks and data
-
-ADD workspace/ ${SHARED_WORKSPACE}/
 
 # -- Layer: JupyterLab + Python kernel for PySpark
 
