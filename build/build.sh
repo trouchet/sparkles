@@ -55,6 +55,9 @@ else
   exit 1
 fi
 
+# Images and volumes names
+image_order=("base" "spark-base" "spark-master" "spark-worker" "jupyterlab")
+volume_names=("hadoop-distributed-file-system")
 
 # ----------------------------------------------------------------------------------------------------------------------
 # -- Functions ----------------------------------------------------------------------------------------------------------
@@ -93,11 +96,8 @@ cleanContainer() {
 # Inputs: None
 # Outputs: None
 cleanContainers() {
-  # Define an array of container names to be cleaned
-  local container_names=("jupyterlab" "spark-worker" "spark-master" "spark-base" "base")
-
   # Loop over each container name and call the cleanContainer function
-  for container_name in "${container_names[@]}"; do
+  for container_name in "${image_order[@]}"; do
     cleanContainer "$container_name"  # Clean the specific container
   done
 }
@@ -128,10 +128,7 @@ function cleanImageAndSubimages() {
 # Input: None.
 # Output: None.
 cleanImages() {
-
-  local container_names=("jupyterlab" "spark-worker" "spark-master" "spark-base")
-
-  for container_name in "${container_names[@]}"; do
+  for container_name in "${image_order[@]}"; do
     cleanImageAndSubimages "${container_name}"
   done
 }
@@ -158,9 +155,7 @@ function cleanVolume() {
 #
 # Inputs: None
 # Outputs: None
-function cleanVolumes() {
-  declare -a volume_names=("hadoop-distributed-file-system")
-  
+function cleanVolumes() {  
   for volume_name in "${volume_names[@]}"; do
     cleanVolume "$volume_name"
   done
@@ -230,7 +225,11 @@ function buildImages() {
     --build-arg jupyterlab_version=${JUPYTERLAB_VERSION}"       
   )
   
-  for image_name in "${!image_configs[@]}"; do
+  for image_name in "${image_order[@]}"; do
+    echo "================================="
+    echo "$image_name"
+    echo "================================="
+
     read -r tag_name additional_args <<<"${image_configs[$image_name]}"
     buildImage "$DOCKER_BASE_DIR/$image_name/Dockerfile" "$tag_name" "$additional_args"
   done
