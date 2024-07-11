@@ -4,4 +4,4 @@ Hi there, thanks for helping the project! We are doing our best to help the comm
 parallel computing in distributed environments through our projects. :sparkles:
 
 - **André Perez** - [dekoperez](https://twitter.com/dekoperez) - andre.marcos.perez@gmail.com
-- **Bruno Peixoto** - [dekoperez](https://twitter.com/brunolnetto) - brunolnetto@gmail.com
+- **Bruno Peixoto** - [brunolnetto](https://twitter.com/brunolnetto) - brunolnetto@gmail.com
